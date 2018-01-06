@@ -12,16 +12,11 @@ function linkedListGenerator() {
 
     if (head === null) {
       head = newNode;
-      tail = newNode;
     } else {
-      let temp = head;
-      while (temp.next !== null) {
-        temp = temp.next;
-      }
-
-      temp.next = newNode;
-      tail = temp.next;
+      tail.next = newNode;
+      newNode.prev = tail;
     }
+    tail = newNode;
     return newNode;
   }
 
@@ -42,33 +37,36 @@ function linkedListGenerator() {
 
   function remove(number) {
     let temp = head;
-    let prev = null;
     let index = 0;
 
     while (temp !== null) {
       if (index === number) {
         if (index === 0) {
           head = head.next;
+
+          if (head === null) {
+            tail = null;
+          } else {
+            head.prev = null;
+          }
         } else if (temp === tail) {
-          prev.next = null;
-          tail = prev;
+          tail = temp.prev;
+          tail.next = null;
         } else {
-          prev.next = temp.next;
+          temp.prev.next = temp.next;
+          temp.next.prev = temp.prev;
         }
         return true;
       }
 
-      prev = temp;
       temp = temp.next;
       index++;
     }
-
     return false;
   }
 
   function insert(value, number) {
     let temp = head;
-    let prev = null;
     let index = 0;
     let newNode = node(value);
 
@@ -76,26 +74,21 @@ function linkedListGenerator() {
       if (index === number) {
         if (index === 0) {
           newNode.next = head;
+          head.prev = newNode;
           head = newNode;
         } else {
           newNode.next = temp;
-          prev.next = newNode;
+          newNode.prev = temp.prev;
+          temp.prev.next = newNode;
+          temp.prev = newNode;
         }
-
         return;
       }
 
-      prev = temp;
       temp = temp.next;
       index++;
     }
-
-    if (index === number) {
-      prev.next = newNode;
-      tail = newNode;
-    } else {
-      return false;
-    }
+    return false;
   }
 
   function getHead() {
@@ -109,11 +102,10 @@ function linkedListGenerator() {
   function node(data) {
     return {
       value: data,
-      next: null
+      next: null,
+      prev: null
     };
   }
-
-
 
   return {
     getHead: getHead,
