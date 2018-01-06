@@ -36,57 +36,44 @@ function linkedListGenerator() {
   }
 
   function remove(number) {
-    let temp = head;
-    let index = 0;
+    let nodeToRemove = this.get(number);
 
-    while (temp !== null) {
-      if (index === number) {
-        if (index === 0) {
-          head = head.next;
+    if (nodeToRemove) {
+      if (nodeToRemove === head) {
+        head = head.next;
 
-          if (head === null) {
-            tail = null;
-          } else {
-            head.prev = null;
-          }
-        } else if (temp === tail) {
-          tail = temp.prev;
-          tail.next = null;
+        if (head === null) {
+          tail = null;
         } else {
-          temp.prev.next = temp.next;
-          temp.next.prev = temp.prev;
+          head.prev = null;
         }
-        return true;
+      } else if (nodeToRemove === tail) {
+        tail = tail.prev;
+        tail.next = null;
+      } else {
+        nodeToRemove.prev.next = nodeToRemove.next;
+        nodeToRemove.next.prev = nodeToRemove.prev;
       }
-
-      temp = temp.next;
-      index++;
+    } else {
+      return false;
     }
-    return false;
   }
 
   function insert(value, number) {
-    let temp = head;
-    let index = 0;
-    let newNode = node(value);
+    let nodeToInsertAt = this.get(number);
 
-    while (temp !== null) {
-      if (index === number) {
-        if (index === 0) {
-          newNode.next = head;
-          head.prev = newNode;
-          head = newNode;
-        } else {
-          newNode.next = temp;
-          newNode.prev = temp.prev;
-          temp.prev.next = newNode;
-          temp.prev = newNode;
-        }
-        return;
+    if (nodeToInsertAt) {
+      let newNode = node(value);
+      if (nodeToInsertAt === head) {
+        newNode.next = head;
+        head.prev = newNode;
+        head = newNode;
+      } else {
+        newNode.next = nodeToInsertAt;
+        newNode.prev = nodeToInsertAt.prev;
+        nodeToInsertAt.prev.next = newNode;
+        nodeToInsertAt.prev = newNode;
       }
-
-      temp = temp.next;
-      index++;
     }
     return false;
   }
